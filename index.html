@@ -761,6 +761,79 @@
       footer { flex-direction: column; gap: 16px; text-align: center; padding: 28px 20px; }
       .chat-window { width: calc(100vw - 40px); left: 20px; }
       .cta-box { padding: 40px 24px; }
+      .about-visual { grid-template-columns: 1fr; }
+      .about-card.span2 { grid-column: span 1; }
+    }
+
+    @media (max-width: 600px) {
+      /* NAV */
+      nav { padding: 12px 16px; }
+      .nav-logo { font-size: 18px; }
+      .nav-logo img { height: 34px; }
+
+      /* HERO */
+      .hero { padding: 90px 16px 50px; }
+      .hero h1 { font-size: 34px; letter-spacing: -0.5px; }
+      .hero p { font-size: 15px; }
+      .hero-badge { font-size: 12px; padding: 6px 14px; }
+      .hero-buttons { flex-direction: column; align-items: center; gap: 12px; }
+      .btn-gold, .btn-outline { width: 100%; max-width: 300px; text-align: center; padding: 14px 24px; font-size: 15px; }
+      .hero-stats { flex-direction: row; flex-wrap: wrap; gap: 20px; justify-content: center; padding-top: 28px; margin-top: 40px; }
+      .stat-number { font-size: 26px; }
+      .stat-label { font-size: 12px; }
+      .hero-watermark { width: 280px; height: 280px; }
+
+      /* DIVIDER */
+      .divider { margin: 0 16px; }
+
+      /* ABOUT */
+      .about-section { padding: 56px 16px; }
+      .about-grid { gap: 32px; }
+      .section-title { font-size: 26px; }
+      .section-sub { font-size: 14px; }
+      .about-visual { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .about-card.span2 { grid-column: span 2; }
+      .about-card { padding: 16px; }
+      .about-card-value { font-size: 20px; }
+      .about-card-icon { font-size: 22px; }
+      .modules-list li { font-size: 14px; }
+
+      /* FEATURES */
+      .features-section { padding: 56px 16px; }
+      .features-grid { grid-template-columns: 1fr; gap: 14px; }
+      .feature-card { padding: 24px 20px; }
+      .feature-title { font-size: 16px; }
+      .feature-desc { font-size: 13px; }
+      .feature-icon { width: 46px; height: 46px; font-size: 20px; }
+
+      /* CTA */
+      .cta-section { padding: 48px 16px; }
+      .cta-box { padding: 36px 20px; border-radius: 18px; }
+      .cta-box h2 { font-size: 24px; }
+      .cta-box p { font-size: 14px; }
+
+      /* FOOTER */
+      footer { padding: 24px 16px; gap: 14px; }
+      .footer-logo { font-size: 17px; }
+      .footer-logo img { height: 30px; }
+      .footer-copy { font-size: 12px; }
+
+      /* CHATBOT */
+      .chat-fab { bottom: 20px; left: 16px; width: 56px; height: 56px; }
+      .chat-fab svg { width: 24px; height: 24px; }
+      .chat-window {
+        left: 0; right: 0; bottom: 0;
+        width: 100vw;
+        height: 75vh;
+        border-radius: 22px 22px 0 0;
+        transform-origin: bottom center;
+      }
+      .chat-header { padding: 14px 16px; }
+      .chat-header-name { font-size: 14px; }
+      .chat-messages { padding: 14px 12px; }
+      .msg-bubble { font-size: 13px; padding: 10px 14px; }
+      .chat-input { font-size: 14px; padding: 10px 14px; }
+      .chat-send { width: 40px; height: 40px; }
     }
   </style>
 </head>
@@ -1026,6 +1099,8 @@
       if (typeof d === "object") {
         return d.output || d.text || d.message || d.response ||
                d.answer || d.reply ||
+               extractReply(d.firstEntryJson) ||
+               extractReply(d.firstEntryBinary) ||
                extractReply(d.json) || extractReply(d.data) ||
                extractReply(d.result) || extractReply(d.body) || "";
       }
@@ -1047,16 +1122,37 @@
       try {
         const res = await fetch(WEBHOOK_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text, sessionId: sessionId })
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          mode: "cors",
+          body: JSON.stringify({
+            chatInput: text,
+            message: text,
+            sessionId: sessionId,
+            action: "sendMessage"
+          })
         });
+
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+
         const data = await res.json();
         removeTyping();
         const reply = extractReply(data) || "عذراً، لم أتمكن من الحصول على رد. يرجى المحاولة مرة أخرى.";
         appendMessage(reply, "bot");
       } catch (err) {
         removeTyping();
-        appendMessage("⚠️ حدث خطأ في الاتصال. تفضل بزيارة <a href='https://support.snso.net' target='_blank' style='color:var(--gold)'>مركز الدعم</a>.", "bot");
+        console.error("Chat error:", err);
+
+        // Try to give a more helpful error message
+        if (err.message && err.message.includes("Failed to fetch")) {
+          appendMessage("⚠️ تعذّر الاتصال بالخادم. تأكد من أن الـ Workflow في n8n مفعّل (Active) وأن الـ CORS مضبوط. أو تفضل بزيارة <a href='https://support.snso.net' target='_blank' style='color:var(--gold)'>مركز الدعم</a>.", "bot");
+        } else {
+          appendMessage("⚠️ حدث خطأ: " + err.message + ". تفضل بزيارة <a href='https://support.snso.net' target='_blank' style='color:var(--gold)'>مركز الدعم</a>.", "bot");
+        }
       } finally {
         isWaiting = false;
         document.getElementById("sendBtn").disabled = false;
