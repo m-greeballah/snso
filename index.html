@@ -1,172 +1,1066 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>SNSO AI Assistant - Demo</title>
-<style>
-body{
-  font-family: 'Segoe UI', Arial;
-  background:#0f172a;
-  color:#e2e8f0;
-  margin:0;
-}
-.header{
-  background:linear-gradient(135deg,#1e1b4b,#312e81,#1e3a5f);
-  padding:30px;
-}
-.container{
-  max-width:900px;
-  margin:auto;
-}
-h1{margin:0;color:white}
-.search-box{
-  margin-top:20px;
-  display:flex;
-  gap:10px;
-}
-input{
-  flex:1;
-  padding:14px;
-  border-radius:10px;
-  border:2px solid #6366f1;
-  background:#1e293b;
-  color:white;
-}
-button{
-  padding:14px 24px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(135deg,#6366f1,#8b5cf6);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-.answer{
-  margin-top:25px;
-  background:#1e293b;
-  padding:20px;
-  border-radius:15px;
-  border:1px solid #6366f1;
-}
-.result-card{
-  margin-top:10px;
-  padding:15px;
-  background:#1e293b;
-  border:1px solid #334155;
-  border-radius:10px;
-}
-.footer{
-  margin-top:40px;
-  text-align:center;
-  padding:20px;
-  color:#64748b;
-}
-.example{
-  margin-top:15px;
-}
-.example span{
-  background:#334155;
-  padding:6px 12px;
-  border-radius:20px;
-  margin:5px;
-  cursor:pointer;
-  display:inline-block;
-  font-size:13px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سنسو — نظام إدارة الموارد</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0ea5e9;
+      --primary-dark: #0284c7;
+      --accent: #38bdf8;
+      --gold: #f59e0b;
+      --dark: #020817;
+      --dark-2: #0c1628;
+      --dark-3: #111f35;
+      --dark-4: #162540;
+      --text: #e2eaf4;
+      --text-muted: #7a95b8;
+      --border: rgba(14, 165, 233, 0.15);
+      --glow: 0 0 40px rgba(14, 165, 233, 0.25);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 60px;
+      background: rgba(2, 8, 23, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-logo span { color: var(--primary); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--primary); }
+
+    .nav-cta {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: 700 !important;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--primary-dark) !important; color: #fff !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,165,233,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(245,158,11,0.08) 0%, transparent 60%),
+        var(--dark);
+    }
+
+    /* Grid lines */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, black 0%, transparent 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(14,165,233,0.1);
+      border: 1px solid rgba(14,165,233,0.3);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 18px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    .hero h1 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 24px;
+      animation: fadeDown 0.8s 0.1s ease both;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--primary), var(--accent), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      font-weight: 400;
+      animation: fadeDown 0.8s 0.2s ease both;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeDown 0.8s 0.3s ease both;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 16px 36px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(14,165,233,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(14,165,233,0.5);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      padding: 16px 36px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Stats bar */
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 72px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      animation: fadeDown 0.8s 0.4s ease both;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-number {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ─── FEATURES ─── */
+    .section {
+      padding: 100px 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      display: inline-block;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: 'Tajawal', sans-serif;
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      color: var(--text-muted);
+      font-size: 17px;
+      max-width: 540px;
+    }
+
+    .section-header { margin-bottom: 64px; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(30px, -30px);
+    }
+
+    .feature-card:hover {
+      border-color: rgba(14,165,233,0.4);
+      transform: translateY(-4px);
+      box-shadow: var(--glow);
+    }
+
+    .feature-icon {
+      width: 52px; height: 52px;
+      background: rgba(14,165,233,0.1);
+      border: 1px solid rgba(14,165,233,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section {
+      padding: 100px 60px;
+      background: var(--dark-2);
+      position: relative;
+      z-index: 1;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .about-visual {
+      position: relative;
+      height: 400px;
+    }
+
+    .about-card {
+      position: absolute;
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 28px;
+    }
+
+    .about-card.main {
+      top: 0; left: 0; right: 0;
+      text-align: center;
+    }
+
+    .about-card.bottom-right {
+      bottom: 40px; left: 0;
+      width: 200px;
+    }
+
+    .about-card.bottom-left {
+      bottom: 0; right: 0;
+      width: 200px;
+    }
+
+    .about-card-title {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .about-card-value {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .about-card-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .modules-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modules-list li {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .modules-list li::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ─── CTA BANNER ─── */
+    .cta-section {
+      padding: 80px 60px;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .cta-box {
+      max-width: 760px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, var(--dark-3), var(--dark-4));
+      border: 1px solid rgba(14,165,233,0.25);
+      border-radius: 24px;
+      padding: 64px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(14,165,233,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .cta-box h2 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .cta-box p {
+      color: var(--text-muted);
+      font-size: 17px;
+      margin-bottom: 36px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      padding: 40px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-logo {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .footer-logo span { color: var(--primary); }
+
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    /* ─── CHATBOT ─── */
+    .chat-fab {
+      position: fixed;
+      bottom: 32px;
+      left: 32px;
+      width: 62px; height: 62px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(14,165,233,0.5);
+      z-index: 999;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+    }
+
+    .chat-fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 40px rgba(14,165,233,0.7);
+    }
+
+    .chat-fab svg { width: 28px; height: 28px; fill: #fff; }
+
+    .chat-fab .close-icon { display: none; }
+    .chat-fab.open .chat-icon { display: none; }
+    .chat-fab.open .close-icon { display: block; }
+
+    .chat-window {
+      position: fixed;
+      bottom: 108px;
+      left: 32px;
+      width: 380px;
+      height: 560px;
+      background: var(--dark-2);
+      border: 1px solid rgba(14,165,233,0.25);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      z-index: 998;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(14,165,233,0.1);
+      overflow: hidden;
+      transform: scale(0.9) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+      transform-origin: bottom left;
+    }
+
+    .chat-window.open {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, var(--dark-3), var(--dark-4));
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-avatar {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .chat-header-info { flex: 1; }
+
+    .chat-header-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+    }
+
+    .chat-header-status {
+      font-size: 12px;
+      color: #4ade80;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chat-header-status::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .msg {
+      max-width: 82%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; }
+
+    .msg-bubble {
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .msg.bot .msg-bubble {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.user .msg-bubble {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      padding: 0 4px;
+    }
+
+    .msg.user .msg-time { text-align: left; }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 5px;
+      padding: 14px 18px;
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      border-bottom-right-radius: 4px;
+      align-self: flex-start;
+      width: fit-content;
+    }
+
+    .typing-dot {
+      width: 7px; height: 7px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    .chat-input-area {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      background: var(--dark-3);
+    }
+
+    .chat-input {
+      flex: 1;
+      background: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Cairo', sans-serif;
+      resize: none;
+      outline: none;
+      max-height: 100px;
+      transition: border-color 0.2s;
+      direction: rtl;
+    }
+
+    .chat-input:focus { border-color: var(--primary); }
+    .chat-input::placeholder { color: var(--text-muted); }
+
+    .chat-send {
+      width: 42px; height: 42px;
+      background: var(--primary);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .chat-send:hover { background: var(--primary-dark); transform: scale(1.05); }
+    .chat-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .chat-send svg { width: 18px; height: 18px; fill: #fff; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .section { padding: 70px 24px; }
+      .about-section { padding: 70px 24px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { height: 220px; }
+      .hero-stats { gap: 28px; }
+      .cta-section { padding: 60px 24px; }
+      .cta-box { padding: 40px 24px; }
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+      .chat-window { width: calc(100vw - 40px); left: 20px; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="header">
-<div class="container">
-<h1>🤖 SNSO AI Assistant</h1>
-<p>المساعد الذكي لنظام سنسو لإدارة الموارد - نسخة تجريبية</p>
+  <!-- ─── NAVBAR ─── -->
+  <nav>
+    <div class="nav-logo">سنسو <span>ERP</span></div>
+    <ul class="nav-links">
+      <li><a href="#features">المميزات</a></li>
+      <li><a href="#about">عن النظام</a></li>
+      <li><a href="#contact">تواصل معنا</a></li>
+      <li><a href="https://support.snso.net" target="_blank" class="nav-cta">مركز الدعم</a></li>
+    </ul>
+  </nav>
 
-<div class="search-box">
-<input type="text" id="query" placeholder="اكتب سؤالك هنا... مثال: كيف أضيف مستخدم جديد؟">
-<button onclick="search()">بحث</button>
-</div>
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">✦ نظام إدارة الموارد المتكامل</div>
+      <h1>
+        أدر منشأتك بذكاء<br />
+        مع <span class="highlight">سنسو ERP</span>
+      </h1>
+      <p>
+        منظومة متكاملة تربط الموارد البشرية، المحاسبة المالية، التخطيط، وبوابة الموظف في نظام واحد سلس وفعّال.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="openChat()">تحدث مع المساعد الذكي 🤖</button>
+        <a href="https://support.snso.net" target="_blank" class="btn-secondary">اكتشف الوثائق</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">+11</span>
+          <div class="stat-label">برنامج متكامل</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">360°</span>
+          <div class="stat-label">إدارة شاملة</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">24/7</span>
+          <div class="stat-label">دعم ذكي</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="example">
-<span onclick="setExample('كيف أضيف مستخدم جديد؟')">كيف أضيف مستخدم جديد؟</span>
-<span onclick="setExample('كيف أضبط مخطط إجراء؟')">كيف أضبط مخطط إجراء؟</span>
-<span onclick="setExample('كيف أوافق على طلب إجازة؟')">كيف أوافق على طلب إجازة؟</span>
-</div>
+  <!-- ─── FEATURES ─── -->
+  <section class="section" id="features">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="section-header">
+        <span class="section-label">المميزات</span>
+        <h2 class="section-title">كل ما تحتاجه في مكان واحد</h2>
+        <p class="section-sub">سنسو ERP مصمم ليناسب منشآت القطاع الخيري والإداري في العالم العربي</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <div class="feature-title">إدارة الموارد البشرية</div>
+          <div class="feature-desc">إدارة شاملة للموظفين، الإجازات، الرواتب، الحضور والغياب، ومساءلة الغياب بكل سهولة.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔐</div>
+          <div class="feature-title">منظومة الصلاحيات</div>
+          <div class="feature-desc">تحكم دقيق في صلاحيات كل مستخدم عبر قوالب صلاحيات قابلة للتخصيص لكل دور وظيفي.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">تقارير متكاملة</div>
+          <div class="feature-desc">تقارير شاملة لجميع أقسام النظام مع إمكانية التصدير إلى Excel وطباعة فورية.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚙️</div>
+          <div class="feature-title">منظومة الإجراءات</div>
+          <div class="feature-desc">ضبط مخططات سير الطلبات وتتبعها داخل المنشأة من الإنشاء حتى الاعتماد النهائي.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <div class="feature-title">المحاسبة المالية</div>
+          <div class="feature-desc">إدارة طلبات الصرف، السلف، مسيرات الرواتب، والقيود المحاسبية بشكل تلقائي ومتكامل.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <div class="feature-title">بوابة الموظف</div>
+          <div class="feature-desc">منصة ذاتية الخدمة لكل موظف لإنشاء الطلبات ومتابعتها في أي وقت ومن أي مكان.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-</div>
-</div>
+  <!-- ─── ABOUT ─── -->
+  <section class="about-section" id="about">
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="about-card main">
+          <div class="about-card-title">برامج النظام المتكاملة</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px;">
+            <span style="background:rgba(14,165,233,0.1);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:13px;">الموارد البشرية</span>
+            <span style="background:rgba(14,165,233,0.1);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:13px;">المحاسبة المالية</span>
+            <span style="background:rgba(14,165,233,0.1);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:13px;">التخطيط</span>
+            <span style="background:rgba(14,165,233,0.1);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:13px;">الدعوة</span>
+            <span style="background:rgba(14,165,233,0.1);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:13px;">إدارة العملاء</span>
+            <span style="background:rgba(14,165,233,0.1);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:13px;">الوقف والوصايا</span>
+            <span style="background:rgba(14,165,233,0.1);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:13px;">المدارس القرآنية</span>
+            <span style="background:rgba(14,165,233,0.1);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:13px;">إنجاز</span>
+          </div>
+        </div>
+        <div class="about-card bottom-right">
+          <div class="about-card-title">دقة الإجراءات</div>
+          <div class="about-card-value">100%</div>
+          <div class="about-card-label">تتبع كامل للطلبات</div>
+        </div>
+        <div class="about-card bottom-left">
+          <div class="about-card-title">دعم اللغات</div>
+          <div class="about-card-value">AR / EN</div>
+          <div class="about-card-label">واجهة ثنائية اللغة</div>
+        </div>
+      </div>
+      <div>
+        <span class="section-label">عن النظام</span>
+        <h2 class="section-title">لماذا سنسو ERP؟</h2>
+        <p style="color:var(--text-muted); font-size:16px; margin-bottom:32px;">
+          طُوِّر سنسو خصيصاً لمنشآت القطاع الخيري والإداري في العالم العربي، مع مرونة عالية تتناسب مع هيكل أي منظمة.
+        </p>
+        <ul class="modules-list">
+          <li>إدارة متكاملة من نقطة واحدة لجميع أقسام المنشأة</li>
+          <li>منظومة إجراءات مرنة قابلة للتخصيص الكامل</li>
+          <li>صلاحيات دقيقة لكل مستخدم حسب دوره الوظيفي</li>
+          <li>تقارير فورية قابلة للتصدير والطباعة</li>
+          <li>دعم فني متواصل عبر مركز دعم سنسو</li>
+          <li>واجهة عربية سهلة الاستخدام بدون تعقيد تقني</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-<div class="container">
+  <!-- ─── CTA ─── -->
+  <section class="cta-section" id="contact">
+    <div class="cta-box">
+      <h2>هل لديك سؤال عن النظام؟</h2>
+      <p>مساعدنا الذكي جاهز للإجابة على استفساراتك وتوجيهك خطوة بخطوة</p>
+      <button class="btn-primary" onclick="openChat()">ابدأ المحادثة الآن 💬</button>
+    </div>
+  </section>
 
-<div id="answer"></div>
-<div id="results"></div>
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <div class="footer-logo">سنسو <span>ERP</span></div>
+    <div class="footer-copy">© 2024 شركة شمس الإدارة. جميع الحقوق محفوظة.</div>
+    <a href="https://support.snso.net" target="_blank" class="footer-link">مركز الدعم ↗</a>
+  </footer>
 
-<div class="footer">
-© 2026 SNSO ERP - Demo Version 1.0
-</div>
+  <!-- ─── CHATBOT ─── -->
+  <button class="chat-fab" id="chatFab" onclick="toggleChat()" aria-label="فتح المحادثة">
+    <svg class="chat-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+    </svg>
+    <svg class="close-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+    </svg>
+  </button>
 
-</div>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="chat-avatar">🤖</div>
+      <div class="chat-header-info">
+        <div class="chat-header-name">سنسو مساعد</div>
+        <div class="chat-header-status">متصل الآن</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot">
+        <div class="msg-bubble">مرحباً! 👋 أنا مساعد سنسو الذكي، كيف يمكنني مساعدتك اليوم؟</div>
+        <div class="msg-time">الآن</div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <textarea
+        class="chat-input"
+        id="chatInput"
+        placeholder="اكتب سؤالك هنا..."
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="chat-send" id="sendBtn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 
-<script>
-const documents = [
-{
-title:"إدارة المستخدمين",
-content:"إدارة المستخدمين تتيح إضافة مستخدم جديد، تغيير حالة الحساب، إعادة ضبط بيانات الدخول، وتصنيف المستخدمين."
-},
-{
-title:"ضبط المخططات",
-content:"ضبط المخططات يتم من إدارة التقنية ثم منظومة الإجراءات ثم ضبط المخططات. يمكن إضافة أو تعديل أو حذف مخطط."
-},
-{
-title:"إجراءات طلب إجازة",
-content:"طلب الإجازة يمر بثلاث مراحل: إنشاء الطلب، الاعتماد أو الرفض، تنفيذ التوصيات وخصم الرصيد."
-},
-{
-title:"ضبط بيانات الدخول",
-content:"يمكن تعديل رقم الجوال والبريد الإلكتروني من خلال إجراء ضبط بيانات الدخول في إدارة التقنية."
-}
-];
+  <script>
+    // ── CONFIG ──────────────────────────────────────────────
+    // 🔧 Replace with your actual n8n webhook URL
+    const WEBHOOK_URL = "https://mohussein.app.n8n.cloud/webhook/ad9e70ec-4213-45bc-ac13-e7b3b6d38b96/chat";
+    // ────────────────────────────────────────────────────────
 
-function setExample(text){
-document.getElementById("query").value = text;
-search();
-}
+    let sessionId = "session_" + Math.random().toString(36).substr(2, 9);
+    let isOpen = false;
+    let isWaiting = false;
 
-function search(){
-const query = document.getElementById("query").value.trim();
-const answerDiv = document.getElementById("answer");
-const resultsDiv = document.getElementById("results");
+    function toggleChat() {
+      isOpen = !isOpen;
+      document.getElementById("chatWindow").classList.toggle("open", isOpen);
+      document.getElementById("chatFab").classList.toggle("open", isOpen);
+      if (isOpen) {
+        setTimeout(() => document.getElementById("chatInput").focus(), 300);
+      }
+    }
 
-answerDiv.innerHTML="";
-resultsDiv.innerHTML="";
+    function openChat() {
+      if (!isOpen) toggleChat();
+    }
 
-if(!query) return;
+    function autoResize(el) {
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 100) + "px";
+    }
 
-let keywords = query.split(" ").filter(w=>w.length>2);
+    function handleKey(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
 
-let matches = documents.filter(doc =>
-keywords.some(word =>
-doc.title.includes(word) || doc.content.includes(word)
-)
-);
+    function getTime() {
+      return new Date().toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" });
+    }
 
-if(matches.length===0){
-answerDiv.innerHTML="<div class='answer'>لم يتم العثور على نتائج مطابقة.</div>";
-return;
-}
+    function appendMessage(text, type) {
+      const msgs = document.getElementById("chatMessages");
+      const div = document.createElement("div");
+      div.className = `msg ${type}`;
+      div.innerHTML = `<div class="msg-bubble">${text}</div><div class="msg-time">${getTime()}</div>`;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
 
-answerDiv.innerHTML="<div class='answer'>بناءً على قاعدة المعرفة، هذه النتائج المرتبطة بسؤالك:</div>";
+    function showTyping() {
+      const msgs = document.getElementById("chatMessages");
+      const div = document.createElement("div");
+      div.id = "typingIndicator";
+      div.className = "typing-indicator";
+      div.innerHTML = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>`;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
 
-matches.forEach(doc=>{
-resultsDiv.innerHTML += `
-<div class="result-card">
-<strong>${doc.title}</strong>
-<p>${doc.content}</p>
-</div>
-`;
-});
-}
-</script>
+    function removeTyping() {
+      const el = document.getElementById("typingIndicator");
+      if (el) el.remove();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+      if (!text || isWaiting) return;
+
+      appendMessage(text, "user");
+      input.value = "";
+      input.style.height = "auto";
+      isWaiting = true;
+      document.getElementById("sendBtn").disabled = true;
+      showTyping();
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: text,
+            sessionId: sessionId
+          })
+        });
+
+        const data = await res.json();
+        removeTyping();
+
+        // Handle different n8n response shapes
+        const reply =
+          data?.output ||
+          data?.text ||
+          data?.message ||
+          data?.response ||
+          (Array.isArray(data) && (data[0]?.output || data[0]?.text)) ||
+          "عذراً، لم أتمكن من الحصول على رد. يرجى المحاولة مرة أخرى.";
+
+        appendMessage(reply, "bot");
+      } catch (err) {
+        removeTyping();
+        appendMessage("⚠️ حدث خطأ في الاتصال. تأكد من إعدادات الـ webhook أو تفضل بزيارة <a href='https://support.snso.net' target='_blank' style='color:var(--primary)'>مركز الدعم</a>.", "bot");
+      } finally {
+        isWaiting = false;
+        document.getElementById("sendBtn").disabled = false;
+        input.focus();
+      }
+    }
+  </script>
 
 </body>
 </html>
