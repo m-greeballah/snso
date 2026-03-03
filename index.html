@@ -616,6 +616,9 @@
       border-bottom: 1px solid rgba(184,151,58,0.2);
     }
 
+    /* Close button hidden on desktop, shown on mobile via media query */
+    .chat-close-btn { display: none; }
+
     .chat-avatar {
       width: 42px; height: 42px;
       background: rgba(255,255,255,0.1);
@@ -732,6 +735,7 @@
       max-height: 100px;
       transition: border-color 0.2s;
       direction: rtl;
+      text-align: right;
     }
 
     .chat-input:focus { border-color: var(--gold); }
@@ -838,6 +842,10 @@
         position: fixed !important;
         display: flex !important;
       }
+      /* Hide FAB when chat is open on mobile to avoid overlap */
+      .chat-fab.open {
+        display: none !important;
+      }
       .chat-fab svg { width: 26px; height: 26px; }
       .chat-window {
         left: 0 !important;
@@ -845,16 +853,30 @@
         bottom: 0 !important;
         top: auto !important;
         width: 100vw !important;
-        height: 80vh !important;
+        height: 90vh !important;
         border-radius: 22px 22px 0 0 !important;
         transform-origin: bottom center;
       }
+      /* Close button inside chat header on mobile */
+      .chat-close-btn {
+        display: flex !important;
+        width: 34px; height: 34px;
+        background: rgba(255,255,255,0.12);
+        border: none;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .chat-close-btn svg { width: 18px; height: 18px; fill: #fff; }
       .chat-header { padding: 14px 16px; }
       .chat-header-name { font-size: 14px; }
       .chat-messages { padding: 14px 12px; }
       .msg-bubble { font-size: 13px; padding: 10px 14px; }
-      .chat-input { font-size: 14px; padding: 10px 14px; }
+      .chat-input { font-size: 14px; padding: 10px 14px; direction: rtl !important; }
       .chat-send { width: 40px; height: 40px; }
+      .chat-input-area { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
     }
   </style>
 </head>
@@ -1038,6 +1060,9 @@
         <div class="chat-header-name">سنسو مساعد</div>
         <div class="chat-header-status">متصل الآن</div>
       </div>
+      <button class="chat-close-btn" onclick="toggleChat()" aria-label="إغلاق">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
     </div>
     <div class="chat-messages" id="chatMessages">
       <div class="msg bot">
