@@ -368,6 +368,24 @@
       min-width: 18px;
     }
     .msg-bubble p { text-align: start; }
+
+    /* SOCIAL LINKS */
+    .footer-social { display:flex; gap:12px; margin-top:16px; flex-wrap:wrap; }
+    .social-btn {
+      width:38px; height:38px;
+      border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      text-decoration:none;
+      transition:transform 0.2s, opacity 0.2s;
+      flex-shrink:0;
+    }
+    .social-btn:hover { transform:translateY(-3px); opacity:0.85; }
+    .social-btn svg { width:18px; height:18px; fill:#fff; }
+    .social-whatsapp { background:#25D366; }
+    .social-x       { background:#000; }
+    .social-facebook { background:#1877F2; }
+    .social-instagram { background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+    .social-youtube  { background:#FF0000; }
 </style>
 </head>
 <body>
@@ -418,9 +436,10 @@
       <div class="about-img-badge">شركة سعودية 🇸🇦</div>
     </div>
     <div>
-      <span class="section-label">من نحن</span>
-      <h2 class="section-title">شركة شمس الإدارة</h2>
-      <p class="section-sub">شركة سعودية متخصصة في التطوير التقني والإداري للقطاع الخيري، سعت شمس الإدارة لإتاحة أفضل المعايير والممارسات الإدارية من خلال نظام سنسو ليكون الأكثر تخصصية وشمولاً للمؤسسات الخيرية في العالم الإسلامي.</p>
+      <span class="section-label">لماذا شركة شمس الادارة</span>
+      <h2 class="section-title">لماذا شركة شمس الادارة؟</h2>
+      <p style="color:var(--gold);font-size:15px;font-weight:600;margin-bottom:14px;">نحن نحدد لك الهدف والرؤية الصحيحة</p>
+      <p class="section-sub">شركة شمس الإدارة شركة سعودية متخصصة في التطوير التقني والإداري للقطاع الخيري، سعت شمس الإدارة من خلال خبرتها الإدارية والإستشارية لإتاحة أفضل المعايير والممارسات الإدارية السليمة من خلال نظام إدارة الموارد سنسو ليكون النظام الأكثر تخصصية وشمولية للمؤسسات الخيرية على مستوى العالم الإسلامي. تم بناء نظام سنسو بواسطة فريق عمل شمس الإدارة الإستشاري والتقني ليعكس الملامح الحقيقيه للعمل الخيري الإسلامي وعبر عدة سنوات من المثابرة والبحث والتطوير المستمر والجهد المتواصل يسعدنا أن نظام سنسو بمفاهيمه الجديدة وعملياته المبتكره وجد قبولاً من عدد كبير من العملاء في عدة دول إسلامية</p>
       <ul class="modules-list">
         <li>إدارة متكاملة من نقطة واحدة لجميع أقسام المنشأة</li>
         <li>نظام سحابي لا يحتاج سيرفرات أو مشرف تقني متخصص</li>
@@ -508,7 +527,7 @@
     <div class="demo-card">
       <div class="demo-card-title">بيانات الدخول التجريبية</div>
       <div class="demo-row"><span class="demo-key">الرابط</span><span class="demo-val">system.snso.net</span></div>
-      <div class="demo-row"><span class="demo-key">اسم المستخدم</span><span class="demo-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcbdb8b1b5b29cafb2afb3f2b2b9a8">[email&#160;protected]</a></span></div>
+      <div class="demo-row"><span class="demo-key">اسم المستخدم</span><span class="demo-val"><a href="mailto:info@snso.net" style="color:inherit;text-decoration:none;">info&#64;snso&#46;net</a></span></div>
       <div class="demo-row"><span class="demo-key">كلمة المرور</span><span class="demo-val">12345678</span></div>
       <div class="demo-row"><span class="demo-key">مدة التجربة</span><span class="demo-val">بدون حدود</span></div>
       <div class="demo-note">⚠️ البيانات المدخلة تُحذف تلقائياً كل 48 ساعة</div>
@@ -539,7 +558,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-question" onclick="toggleFaq(this)">كيف أحصل على العرض الفني والمالي؟<span class="faq-arrow">▼</span></div>
-      <div class="faq-answer">يمكنك الاتصال بمسؤول التسويق الأستاذ عثمان خوجلي على الرقم 0508173910، أو مراسلتنا على <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cda6a5a2aaaca1a48dbea5a0beaca1a4a9acbfa5e3aea2a0">[email&#160;protected]</a> وسيصلك العرض خلال أقل وقت.</div>
+      <div class="faq-answer">يمكنك الاتصال بمسؤول التسويق الأستاذ عثمان خوجلي على الرقم 0508173910، أو مراسلتنا على <a href="mailto:info@snso.net" style="color:inherit;text-decoration:none;">info&#64;snso&#46;net</a> وسيصلك العرض خلال أقل وقت.</div>
     </div>
     <div class="faq-item">
       <div class="faq-question" onclick="toggleFaq(this)">ما تكلفة نظام سنسو نت للمنشآت الصغيرة؟<span class="faq-arrow">▼</span></div>
@@ -596,9 +615,26 @@
       <div class="footer-col-title">تواصل معنا</div>
       <div class="footer-contact-item"><span>📞</span> +966 501 503 177</div>
       <div class="footer-contact-item"><span>📱</span> 0508173910 (تسويق)</div>
-      <div class="footer-contact-item"><span>✉️</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d9b2b1b6beb8b5b099aab1b4aab8b5b0bdb8abb1f7bab6b4">[email&#160;protected]</a></div>
-      <div class="footer-contact-item" style="direction:rtl;text-align:right;"><span>📍</span> القصيم - عنيزة - شارع الملك عبدالعزيز</div>
+      <div class="footer-contact-item"><span>✉️</span> <a href="mailto:info@snso.net" style="color:inherit;text-decoration:none;">info&#64;snso&#46;net</a></div>
+      <div class="footer-contact-item" style="direction:rtl;text-align:right;"><span>📍</span> <a href="https://www.google.com/maps/place/%D8%B4%D8%B1%D9%83%D8%A9+%D8%B4%D9%85%D8%B3+%D8%A7%D9%84%D8%A7%D8%AF%D8%A7%D8%B1%D8%A9%E2%80%AD/@26.0982323,43.9844862,15z" target="_blank" style="color:var(--gold-light);text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'">القصيم - عنيزة - شارع الملك عبدالعزيز ↗</a></div>
     </div>
+  </div>
+  <div class="footer-social" style="padding:20px 40px 0; justify-content:center;">
+    <a href="https://wa.me/message/6JCL36UETXKUM1" target="_blank" class="social-btn social-whatsapp" title="واتساب">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+    <a href="https://twitter.com/shmsalidarh" target="_blank" class="social-btn social-x" title="X (تويتر)">
+      <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a href="https://www.facebook.com/Shmsalidarh-107169571521459" target="_blank" class="social-btn social-facebook" title="فيسبوك">
+      <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+    <a href="https://www.instagram.com/shmsalidarh" target="_blank" class="social-btn social-instagram" title="إنستغرام">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+    <a href="https://www.youtube.com/channel/UCzwofGD0n35CjhJU_bIBsbw" target="_blank" class="social-btn social-youtube" title="يوتيوب">
+      <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </a>
   </div>
   <div class="footer-bottom">
     <div class="footer-copy">© 2026 شركة شمس الإدارة. جميع الحقوق محفوظة.</div>
@@ -637,7 +673,7 @@
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   var WEBHOOK_URL = "https://mohussein.app.n8n.cloud/webhook/28624e59-a75b-4f37-a5c7-3eb9019264e1/chat";
   var sessionId = "session_" + Math.random().toString(36).substr(2, 9);
   var isOpen = false;
