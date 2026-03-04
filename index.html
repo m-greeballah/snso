@@ -747,8 +747,12 @@
 
   function formatMarkdown(text) {
     if (!text) return "";
-    // Escape HTML first
-    text = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    // Convert markdown links [text](url) to <a> BEFORE escaping
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+      '<a href="$2" target="_blank" style="color:var(--gold);text-decoration:underline;">$1</a>');
+    // Convert bare URLs to clickable links (not already inside href)
+    text = text.replace(/(?<!["\'=])(https?:\/\/[^\s<>"'\)]+)/g,
+      '<a href="$1" target="_blank" style="color:var(--gold);text-decoration:underline;">$1</a>');
     // Bold **text**
     text = text.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
     // Split into lines and process
@@ -769,10 +773,10 @@
         html += '<div class="chat-numbered"><span class="chat-num">' + num[1] + '.</span><span>' + num[2] + '</span></div>';
         continue;
       }
-      // Bullet list: - item
-      if (/^[-•]\s+/.test(line)) {
+      // Bullet list: - item or * item
+      if (/^[-•*]\s+/.test(line)) {
         if (!inList) { html += '<ul class="chat-list">'; inList = true; }
-        var item = line.replace(/^[-•]\s+/, "");
+        var item = line.replace(/^[-•*]\s+/, "");
         html += "<li>" + item + "</li>";
         continue;
       }
